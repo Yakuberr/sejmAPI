@@ -1,8 +1,7 @@
 from datetime import datetime
 from exceptions import invalidLinkException
+from .utils import BASE_URL
 import httpx
-
-BASE_URL = "https://api.sejm.gov.pl"
 
 class Prints:
     def __init__(self, raw:dict):

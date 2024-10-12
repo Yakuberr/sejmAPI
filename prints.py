@@ -2,9 +2,7 @@ import httpx
 from urllib.parse import quote, unquote
 from datetime import datetime
 from enum import StrEnum
-
-BASE_URL = "https://api.sejm.gov.pl"
-
+from .utils import BASE_URL
 
 class PrintsFieldsEnum(StrEnum):
     NUMBER = 'number'
