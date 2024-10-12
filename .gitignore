@@ -1,2 +1,28 @@
-./.venv
-./.idea
+# Ignorowanie wirtualnych środowisk
+.venv/
+env/
+venv/
+
+# Ignorowanie ustawień PyCharm
+.idea/
+
+# Ignorowanie plików pyc i cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Ignorowanie plików logów
+*.log
+
+# Ignorowanie plików testowych pokrycia kodu
+.coverage
+*.coverage.*
+
+# Ignorowanie plików build i dist
+build/
+dist/
+*.egg-info/
+
+# Ignorowanie plików konfiguracyjnych systemu operacyjnego
+.DS_Store
+Thumbs.db
