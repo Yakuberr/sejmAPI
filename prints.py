@@ -24,6 +24,7 @@ class Print:
         self.change_date = datetime.fromisoformat(raw['changeDate'])
         self.document_date = datetime.strptime(raw['documentDate'], '%Y-%m-%d').date()
         self.attachments = raw.get('attachments', [])
+        self.additional_prints = [AdditionalPrint(a) for a in raw.get('additionalPrints',[])]
 
     def build_uri_attachments(self):
         return [f'{BASE_URL}/sejm/term{self.term}/prints/{self.number}/{quote(a)}' for a in self.attachments]
@@ -70,18 +71,12 @@ def get_prints(session:httpx.Client, term:int, sort_by:str|PrintsFieldsEnum='', 
 def get_print_details(session:httpx.Client, term:int, print_number):
     response = session.get(f'{BASE_URL}/sejm/term{term}/prints/{print_number}')
     response.raise_for_status()
-    try:
-        ap = [AdditionalPrint(e) for e in response.json()['additionalPrints']]
-    except KeyError:
-        ap = []
-    mp = Print(response.json())
-    return {'additionalPrints':ap, 'mainPrint':mp}
+    return Print(response.json())
 
 
 def get_print_attachment(session:httpx.Client, full_url:str):
     response = session.get(full_url)
     response.raise_for_status()
-    print(full_url)
     return PrintAttachment(unquote(full_url.split('/')[7]), response.content)
 
 
@@ -103,12 +98,7 @@ async def async_get_prints(session:httpx.AsyncClient, term:int, sort_by:str|Prin
 async def async_get_print_details(session:httpx.AsyncClient, term:int, print_number):
     response = await session.get(f'{BASE_URL}/sejm/term{term}/prints/{print_number}')
     response.raise_for_status()
-    try:
-        ap = [AdditionalPrint(e) for e in response.json()['additionalPrints']]
-    except KeyError:
-        ap = []
-    mp = Print(response.json())
-    return {'additionalPrints': ap, 'mainPrint': mp}
+    return Print(response.json())
 
 
 async def async_get_print_attachment(session:httpx.AsyncClient, full_url:str):
