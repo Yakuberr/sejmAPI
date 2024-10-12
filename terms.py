@@ -2,10 +2,10 @@ from datetime import datetime
 from exceptions import invalidLinkException
 import httpx
 
-DEFAULT_ENDPOINT = '/sejm/term'
+BASE_URL = "https://api.sejm.gov.pl"
 
 class Prints:
-    def __init__(self, raw):
+    def __init__(self, raw:dict):
         self.raw = raw
 
     @property
@@ -22,13 +22,15 @@ class Prints:
             raise invalidLinkException("Invalid term's print link")
         return self.raw['link']
 
+
     def build_uri(self):
-        return f'https://api.sejm.gov.pl/sejm{self.link}'
+        return f'{BASE_URL}/sejm{self.link}'
 
 
 class Term:
-    def __init__(self, raw):
+    def __init__(self, raw:dict):
         self.raw = raw
+        self.to = raw.get('to', None)
 
     @property
     def current(self):
@@ -51,9 +53,37 @@ class Term:
 
 def get_current_term(client:httpx.Client):
     try:
-        return Term(httpx.get(f'https://api.sejm.gov.pl{DEFAULT_ENDPOINT}').json()[-1])
+        return Term(client.get(f'{BASE_URL}/sejm/term').json()[-1])
     except httpx.RequestError as exc:
         print(f'Error occurred while requesting data: {exc}')
     except KeyError as exc:
         print(f'Invalid response structure: {exc}')
+
+
+def get_term(client:httpx.Client, term:int):
+    res = client.get(f'{BASE_URL}/sejm/term{term}')
+    res.raise_for_status()
+    return Term(res.json())
+
+async def async_get_current_term(client:httpx.AsyncClient):
+    try:
+        res = await client.get(f'{BASE_URL}/sejm/term')
+    except httpx.RequestError as exc:
+        print(f'Error occurred while requesting data: {exc}')
+        return
+    try:
+        t = Term(res.json()[-1])
+        return t
+    except KeyError as exc:
+        print(f'Invalid response structure: {exc}')
+
+async def async_get_term(client:httpx.AsyncClient, term:int):
+    res = await client.get(f'{BASE_URL}/sejm/term{term}')
+    res.raise_for_status()
+    return Term(res.json())
+
+with httpx.Client() as session:
+    t = get_term(session, 11)
+    print(t.raw)
+
 
