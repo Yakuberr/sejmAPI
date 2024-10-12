@@ -1,0 +1,2 @@
+class invalidLinkException(Exception):
+    pass
