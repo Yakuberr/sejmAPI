@@ -1,7 +1,7 @@
 import httpx
 from urllib.parse import quote, unquote
 from enum import StrEnum
-from utils import BASE_URL, parse_normal_date, parse_iso_format
+from .utils import BASE_URL, parse_normal_date, parse_iso_format
 
 class PrintsFieldsEnum(StrEnum):
     NUMBER = 'number'

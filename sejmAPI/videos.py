@@ -1,4 +1,4 @@
-from utils import BASE_URL, filter_query_params, parse_iso_format
+from .utils import BASE_URL, filter_query_params, parse_iso_format
 import httpx
 
 class Video:

@@ -1,5 +1,5 @@
-from exceptions import invalidLinkException
-from utils import BASE_URL, parse_iso_format, parse_normal_date
+from .exceptions import invalidLinkException
+from .utils import BASE_URL, parse_iso_format, parse_normal_date
 import httpx
 
 class Prints:

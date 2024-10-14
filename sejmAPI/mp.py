@@ -1,4 +1,4 @@
-from utils import BASE_URL, parse_normal_date
+from .utils import BASE_URL, parse_normal_date
 import httpx
 
 class Mp:
