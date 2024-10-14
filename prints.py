@@ -1,8 +1,7 @@
 import httpx
 from urllib.parse import quote, unquote
-from datetime import datetime
 from enum import StrEnum
-from .utils import BASE_URL
+from utils import BASE_URL, parse_normal_date, parse_iso_format
 
 class PrintsFieldsEnum(StrEnum):
     NUMBER = 'number'
@@ -13,14 +12,13 @@ class PrintsFieldsEnum(StrEnum):
     ATTACHMENTS = 'attachments'
 
 class Print:
-
     def __init__(self, raw):
         self.number = raw['number']
-        self.delivery_date = datetime.strptime(raw['deliveryDate'], '%Y-%m-%d').date()
+        self.delivery_date = parse_normal_date(raw['deliveryDate'], '%Y-%m-%d').date()
         self.title = raw['title']
         self.term = raw['term']
-        self.change_date = datetime.fromisoformat(raw['changeDate'])
-        self.document_date = datetime.strptime(raw['documentDate'], '%Y-%m-%d').date()
+        self.change_date = parse_iso_format(raw['changeDate'])
+        self.document_date = parse_normal_date(raw['documentDate'], '%Y-%m-%d').date()
         self.attachments = raw.get('attachments', [])
         self.additional_prints = [AdditionalPrint(a) for a in raw.get('additionalPrints',[])]
 
@@ -104,4 +102,7 @@ async def async_get_print_attachment(session:httpx.AsyncClient, full_url:str):
     response.raise_for_status()
     print(full_url)
     return PrintAttachment(unquote(full_url.split('/')[7]), response.content)
+
+__all__ = ['PrintsFieldsEnum', 'Print', 'AdditionalPrint', 'PrintAttachment', 'get_prints', 'get_print_details',
+           'get_print_attachment', 'async_get_prints', 'async_get_print_details', 'async_get_print_attachment']
 

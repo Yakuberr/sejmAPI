@@ -1,6 +1,5 @@
-from datetime import datetime
 from exceptions import invalidLinkException
-from .utils import BASE_URL
+from utils import BASE_URL, parse_iso_format, parse_normal_date
 import httpx
 
 class Prints:
@@ -13,7 +12,7 @@ class Prints:
 
     @property
     def last_changed(self):
-        return datetime.fromisoformat(self.raw['lastChanged'])
+        return parse_iso_format(self.raw['lastChanged'])
 
     @property
     def link(self):
@@ -37,7 +36,7 @@ class Term:
 
     @property
     def start(self):
-        return datetime.strptime(self.raw['from'], '%Y-%m-%d').date()
+        return parse_normal_date(self.raw['from'], '%Y-%m-%d').date()
 
     @property
     def num(self):
@@ -81,8 +80,7 @@ async def async_get_term(client:httpx.AsyncClient, term:int):
     res.raise_for_status()
     return Term(res.json())
 
-with httpx.Client() as session:
-    t = get_term(session, 11)
-    print(t.raw)
+__all__ = ['Prints', 'Term', 'get_current_term', 'get_term', 'async_get_term', 'async_get_current_term']
+
 
 
