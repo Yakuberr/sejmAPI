@@ -1,3 +1,5 @@
+"""Moduł oparty o: https://api.sejm.gov.pl/committees.html"""
+
 from .utils import BASE_URL, parse_normal_date
 from enum import StrEnum
 import httpx

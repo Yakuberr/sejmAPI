@@ -1,3 +1,5 @@
+"""Moduł oparty o: https://api.sejm.gov.pl/clubs.html#"""
+
 from .utils import BASE_URL
 import httpx
 

@@ -1,3 +1,4 @@
+"""Moduł oparty o: https://api.sejm.gov.pl/prints.html"""
 import httpx
 from urllib.parse import quote, unquote
 from enum import StrEnum

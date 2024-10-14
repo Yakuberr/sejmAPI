@@ -1,3 +1,5 @@
+"""Moduł oparty o: https://api.sejm.gov.pl/interpellations.html"""
+
 from .utils import BASE_URL, filter_query_params, parse_normal_date, parse_iso_format
 from datetime import date, datetime
 from urllib.parse import urlencode

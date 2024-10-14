@@ -1,3 +1,5 @@
+"""Moduł oparty o: https://api.sejm.gov.pl/MP.html"""
+
 from .utils import BASE_URL, parse_normal_date
 import httpx
 

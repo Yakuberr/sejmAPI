@@ -1,3 +1,4 @@
+"""Moduł oparty o: https://api.sejm.gov.pl/term.html"""
 from .exceptions import invalidLinkException
 from .utils import BASE_URL, parse_iso_format, parse_normal_date
 import httpx
