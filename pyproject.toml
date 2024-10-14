@@ -1,0 +1,18 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "sejmAPI"
+version = "1.0.0"
+authors = [
+  { name="Yakuberr", email="YakubKr@proton.me" },
+]
+description = "Wrapper API sejmu napisany na podstawie dokumentacji: https://api.sejm.gov.pl/sejm.html#dokumentacja-po-polsku"
+readme = "README.md"
+requires-python = ">=3.12"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
