@@ -11,7 +11,7 @@ authors = [
 description = "Wrapper API sejmu napisany na podstawie dokumentacji: https://api.sejm.gov.pl/sejm.html#dokumentacja-po-polsku"
 readme = "README.md"
 dependencies = [
-    'httpx'
+    'httpx == 0.27.2'
 ]
 requires-python = ">=3.12"
 classifiers = [
