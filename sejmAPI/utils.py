@@ -14,7 +14,7 @@ def parse_iso_format(date_str:str):
 
 def parse_normal_date(date_str:str, format:str):
     try:
-        return datetime.strptime(date_str, format)
+        return datetime.strptime(date_str, format).date()
     except ValueError:
         return None
 
