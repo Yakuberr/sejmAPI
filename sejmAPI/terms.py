@@ -5,22 +5,9 @@ import httpx
 
 class Prints:
     def __init__(self, raw:dict):
-        self.raw = raw
-
-    @property
-    def count(self):
-        return self.raw['count']
-
-    @property
-    def last_changed(self):
-        return parse_iso_format(self.raw['lastChanged'])
-
-    @property
-    def link(self):
-        if type(self.raw['link'] is bool):
-            raise invalidLinkException("Invalid term's print link")
-        return self.raw['link']
-
+        self.count = raw.get('count')
+        self.last_changed = parse_iso_format(raw.get('lastChanged'))
+        self.link = raw.get('link')
 
     def build_uri(self):
         return f'{BASE_URL}/sejm{self.link}'
@@ -30,22 +17,10 @@ class Term:
     def __init__(self, raw:dict):
         self.raw = raw
         self.to = raw.get('to', None)
-
-    @property
-    def current(self):
-        return self.raw['current']
-
-    @property
-    def start(self):
-        return parse_normal_date(self.raw['from'], '%Y-%m-%d').date()
-
-    @property
-    def num(self):
-        return self.raw['num']
-
-    @property
-    def prints(self):
-        return Prints(self.raw['prints'])
+        self.current = raw.get('current')
+        self.start = parse_normal_date(raw.get('from'), '%Y-%m-%d')
+        self.num = raw.get('num')
+        self.prints = Prints(raw.get('prints'))
 
     def __str__(self):
         return f'<{self.num}, {self.start}>'
