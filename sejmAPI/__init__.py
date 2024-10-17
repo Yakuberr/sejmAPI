@@ -1,6 +1,5 @@
 from . import clubs
 from . import committees
-from . import exceptions
 from . import interpellations
 from . import mp
 from . import prints
