@@ -1,4 +1,3 @@
-"""Moduł oparty o: https://api.sejm.gov.pl/prints.html"""
 import httpx
 from urllib.parse import quote, unquote
 from enum import StrEnum
@@ -14,12 +13,12 @@ class PrintsFieldsEnum(StrEnum):
 
 class Print:
     def __init__(self, raw):
-        self.number = raw['number']
-        self.delivery_date = parse_normal_date(raw['deliveryDate'], '%Y-%m-%d').date()
-        self.title = raw['title']
-        self.term = raw['term']
-        self.change_date = parse_iso_format(raw['changeDate'])
-        self.document_date = parse_normal_date(raw['documentDate'], '%Y-%m-%d').date()
+        self.number = raw.get('number', '')
+        self.delivery_date = parse_normal_date(raw.get('deliveryDate', ''), '%Y-%m-%d')
+        self.title = raw.get('title', '')
+        self.term = raw.get('term', -1)
+        self.change_date = parse_iso_format(raw.get('changeDate', ''))
+        self.document_date = parse_normal_date(raw.get('documentDate', ''), '%Y-%m-%d')
         self.attachments = raw.get('attachments', [])
         self.additional_prints = [AdditionalPrint(a) for a in raw.get('additionalPrints',[])]
 
@@ -32,12 +31,7 @@ class Print:
 class AdditionalPrint(Print):
     def __init__(self, raw):
         super().__init__(raw)
-
-    @property
-    def number_associated(self) -> str:
-        return self.number.split('-')[0]
-
-
+        self.number_associated = raw.get('numberAssociated', '')
 
 class PrintAttachment:
     def __init__(self, file_name, content):
@@ -52,6 +46,7 @@ class PrintAttachment:
 
 
 def get_prints(session:httpx.Client, term:int, sort_by:str|PrintsFieldsEnum='', descending=False):
+    """Zwraca listę druków"""
     DESCENDING_MAP = {
         True:'-',
         False:''
@@ -66,12 +61,14 @@ def get_prints(session:httpx.Client, term:int, sort_by:str|PrintsFieldsEnum='', 
 
 
 def get_print_details(session:httpx.Client, term:int, print_number):
+    """Zwraca szczegóły druku"""
     response = session.get(f'{BASE_URL}/sejm/term{term}/prints/{print_number}')
     response.raise_for_status()
     return Print(response.json())
 
 
 def get_print_attachment(session:httpx.Client, full_url:str):
+    """Zwraca zawartość załącznika druku"""
     response = session.get(full_url)
     response.raise_for_status()
     return PrintAttachment(unquote(full_url.split('/')[7]), response.content)
@@ -79,6 +76,7 @@ def get_print_attachment(session:httpx.Client, full_url:str):
 
 # Asynchroniczne wersje funkcji
 async def async_get_prints(session:httpx.AsyncClient, term:int, sort_by:str|PrintsFieldsEnum='', descending=False):
+    """Zwraca listę druków"""
     DESCENDING_MAP = {
         True: '-',
         False: ''
@@ -93,12 +91,14 @@ async def async_get_prints(session:httpx.AsyncClient, term:int, sort_by:str|Prin
 
 
 async def async_get_print_details(session:httpx.AsyncClient, term:int, print_number):
+    """Zwraca szczegóły druku"""
     response = await session.get(f'{BASE_URL}/sejm/term{term}/prints/{print_number}')
     response.raise_for_status()
     return Print(response.json())
 
 
 async def async_get_print_attachment(session:httpx.AsyncClient, full_url:str):
+    """Zwraca zawartość załącznika druku"""
     response = await session.get(full_url)
     response.raise_for_status()
     print(full_url)

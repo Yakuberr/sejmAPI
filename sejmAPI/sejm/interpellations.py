@@ -60,6 +60,7 @@ class Interpellation:
 
 def get_interpellations(session:httpx.Client, term:int, offset:int=None, limit:int=25, title:str=None, from_mp:str|int=None, to:str=None, since:date=None,
     till:date=None, modifiedSince:datetime=None, sort_by:str|InterpellationsSortFields='', descending=False):
+    """Zwraca listę interpelacji"""
     DESCENDING_MAP = {
         True:'-',
         False:''
@@ -77,6 +78,7 @@ async def async_get_interpellations(session: httpx.AsyncClient, term: int, offse
                               title: str = None, from_mp: str | int = None, to: str = None, since: date = None,
                               till: date = None, modifiedSince: datetime = None,
                               sort_by: str | InterpellationsSortFields = '', descending=False):
+    """Zwraca listę interpelacji"""
     DESCENDING_MAP = {
         True: '-',
         False: ''
@@ -98,4 +100,42 @@ async def async_get_interpellations(session: httpx.AsyncClient, term: int, offse
     res.raise_for_status()
     return list(map(lambda d: Interpellation(d), res.json()))
 
-__all__ = ['InterpellationsSortFields', 'Link', 'Attachment', 'Reply', 'Interpellation', 'get_interpellations', 'async_get_interpellations']
+def get_interpellation(session:httpx.Client, term:int, num:str):
+    """Zwraca szczegóły interpelacji"""
+    res = session.get(f'{BASE_URL}/sejm/term{term}/interpellations/{num}')
+    res.raise_for_status()
+    return  Interpellation(res.json())
+
+async def async_get_interpellation(session:httpx.AsyncClient, term:int, num:str):
+    """Zwraca szczegóły interpelacji"""
+    res = await session.get(f'{BASE_URL}/sejm/term{term}/interpellations/{num}')
+    res.raise_for_status()
+    return  Interpellation(res.json())
+
+def get_interpellation_html(session:httpx.Client, term:int, num:str):
+    """Zwraca szczegóły interpelacji w formie html"""
+    res = session.get(f'{BASE_URL}/sejm/term{term}/interpellations/{num}/body')
+    res.raise_for_status()
+    return res.text
+
+async def async_get_interpellation_html(session:httpx.AsyncClient, term:int, num:str):
+    """Zwraca szczegóły interpelacji w formie html"""
+    res = await session.get(f'{BASE_URL}/sejm/term{term}/interpellations/{num}/body')
+    res.raise_for_status()
+    return res.text
+
+def get_interpellation_reply_html(session:httpx.Client, term:int, num:str, key:str):
+    """Zwraca szczegóły odpowiedzi interpelacji w formie html"""
+    res = session.get(f'{BASE_URL}/sejm/term{term}/interpellations/{num}/reply/{key}/body')
+    res.raise_for_status()
+    return res.text
+
+async def async_get_interpellation_reply_html(session:httpx.AsyncClient, term:int, num:str, key:str):
+    """Zwraca szczegóły odpowiedzi interpelacji w formie html"""
+    res = await session.get(f'{BASE_URL}/sejm/term{term}/interpellations/{num}/reply/{key}/body')
+    res.raise_for_status()
+    return res.text
+
+__all__ = ['InterpellationsSortFields', 'Link', 'Attachment', 'Reply', 'Interpellation', 'get_interpellations',
+           'async_get_interpellations', 'get_interpellation', 'async_get_interpellation', 'get_interpellation_html',
+           'async_get_interpellation_html', 'get_interpellation_reply_html', 'async_get_interpellation_reply_html']

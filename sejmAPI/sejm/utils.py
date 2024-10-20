@@ -4,7 +4,7 @@ BASE_URL = "https://api.sejm.gov.pl"
 
 def filter_query_params(**kwargs):
     """Filtruje podane wartości w parametrach. Tworzy słownik parametrów, które nie mają wartości None"""
-    return {k: v for k, v in kwargs.items() if v is not None}
+    return {k.replace('_',''): str(v) for k, v in kwargs.items() if v is not None}
 
 def parse_iso_format(date_str:str):
     try:
